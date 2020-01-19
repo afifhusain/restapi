@@ -47,14 +47,75 @@ class Mahasiswa extends REST_Controller
 		$id = $this->delete('id');
 
 		if ( $id === null ) {
-		$this->response([
+			$this->response([
                     'status' => false,
-                    'message' => 'Provide an ID'
+                    'message' => 'masukkan id'
                 ], REST_Controller::HTTP_BAD_REQUEST);
-
+		} else {
+			if ($this->mahasiswa->deleteMahasiswa($id) > 0) {
+				//ok
+				 $this->response([
+                    'status' => true,
+                    'id' => $id,
+                    'message' => 'data dihapus'
+                ], REST_Controller::HTTP_BAD_REQUEST);
+			} else {
+				//id not found
+				$this->response([
+                    'status' => false,
+                    'message' => 'id not found'
+                ], REST_Controller::HTTP_BAD_REQUEST);
+			}
 		}
 	}
 
+ 	public function index_post()
+ 	{
+ 		$data = [
+ 			'nrp' => $this->post('nrp'),
+ 			'nama' => $this->post('nama'),
+ 			'email' => $this->post('email'),
+ 			'jurusan' => $this->post('jurusan')
+ 		];
+
+ 		if($this->mahasiswa->createMahasiswa($data) > 0) {
+ 			 $this->response([
+                    'status' => true,
+                    'message' => 'data mahasiswa berhasil ditambahkan'
+                ], REST_Controller::HTTP_CREATED);
+ 		} else {
+ 			//id not found
+ 				$this->response([
+                    'status' => false,
+                    'message' => 'gagal menambahkan data'
+                ], REST_Controller::HTTP_BAD_REQUEST);
+ 		}
+ 	}
+
+
+ 	public function index_put()
+ 	{
+ 		$id = $this->put('id');
+ 		$data = [
+ 			'nrp' => $this->put('nrp'),
+ 			'nama' => $this->put('nama'),
+ 			'email' => $this->put('email'),
+ 			'jurusan' => $this->put('jurusan')
+ 		];
+
+ 		if($this->mahasiswa->updateMahasiswa($data, $id) > 0) {
+ 			 $this->response([
+                    'status' => true,
+                    'message' => 'data mahasiswa berhasil diubah'
+                ], REST_Controller::HTTP_CREATED);
+ 		} else {
+ 			//id not found
+ 				$this->response([
+                    'status' => false,
+                    'message' => 'gagal mengubah data'
+                ], REST_Controller::HTTP_BAD_REQUEST);
+ 		}
+ 	}
 }
 
 
